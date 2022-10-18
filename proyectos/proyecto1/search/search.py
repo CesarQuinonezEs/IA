@@ -114,7 +114,27 @@ def depthFirstSearch(problem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    #print("Start: ", problem.getStartState())
+    starNode = problem.getStartState()
+    if problem.isGoalState(starNode):
+        return []
+
+    pilita = util.Stack()
+    nodosVis = []
+    pilita.push((starNode,[]))
+    while not pilita.isEmpty:
+        nodoAct, actions = pilita.pop()
+        if nodoAct not in nodosVis:
+            nodosVis.append(nodoAct)
+            if problem.isGoalState(nodoAct):
+                return actions
+
+            for nextNode, action, cost in problem.getSuccessors(nodoAct):
+                newAction = actions + [action]
+                pilita.push((nextNode, newAction))            
+
+    
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
