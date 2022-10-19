@@ -123,16 +123,17 @@ def depthFirstSearch(problem):
     pilita = util.Stack()
     nodosVis = []
     pilita.push((starNode,[]))
-    while not pilita.isEmpty:
+    while not pilita.isEmpty():
+        print("hola")
         nodoAct, actions = pilita.pop()
         if nodoAct not in nodosVis:
             nodosVis.append(nodoAct)
             if problem.isGoalState(nodoAct):
+                print(actions)
                 return actions
-
-            for nextNode, action, cost in problem.getSuccessors(nodoAct):
-                newAction = actions + [action]
-                pilita.push((nextNode, newAction))            
+            for nNode, action, cost in problem.expand(nodoAct):
+                nAction = actions + [action]
+                pilita.push((nNode, nAction))            
 
     
 
