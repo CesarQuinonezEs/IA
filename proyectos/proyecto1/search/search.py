@@ -117,14 +117,10 @@ def depthFirstSearch(problem):
 
     #print("Start: ", problem.getStartState())
     starNode = problem.getStartState()
-    if problem.isGoalState(starNode):
-        return []
-
     pilita = util.Stack()
     nodosVis = []
     pilita.push((starNode,[]))
     while not pilita.isEmpty():
-        print("hola")
         nodoAct, actions = pilita.pop()
         if nodoAct not in nodosVis:
             nodosVis.append(nodoAct)
@@ -140,6 +136,7 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
