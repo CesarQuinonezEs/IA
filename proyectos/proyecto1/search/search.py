@@ -17,6 +17,7 @@ In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
 
+from itertools import count
 import util
 
 class SearchProblem:
@@ -163,8 +164,26 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    
-    util.raiseNotDefined()
+    pilita = util.PriorityQueue()
+    cont = util.Counter()
+    node = (problem.getStartState(), [])
+    cont[str(node[0])] += heuristic(node[0],problem)
+    print("cont",cont)
+    pilita.push(node,cont[str(cont[0])])
+    closed = []
+
+
+    while not pilita.isEmpty():
+        nodeAux, actions = pilita.pop()
+        if problem.isGoalState(nodeAux):
+            return actions
+        if not nodeAux in closed:
+            closed.append(nodeAux)
+            for nNode, action, cost in problem.expand(nodeAux):
+                nAction = actions + [action]
+                cont[str(nNode)] = problem.getCostOfActionSequence(nAction)
+                cont[str(nNode)] += heuristic(nNode, problem)
+                pilita.push((nNode, nAction), cont[str(nNode)])
 
 
 # Abbreviations
