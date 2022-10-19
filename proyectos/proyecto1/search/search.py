@@ -125,7 +125,6 @@ def depthFirstSearch(problem):
         if nodoAct not in nodosVis:
             nodosVis.append(nodoAct)
             if problem.isGoalState(nodoAct):
-                print(actions)
                 return actions
             for nNode, action, cost in problem.expand(nodoAct):
                 nAction = actions + [action]
@@ -136,19 +135,35 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    
-    util.raiseNotDefined()
+    starNode = problem.getStartState()
+    if problem.isGoalState(starNode):
+        return []
+
+    pilita = util.Queue()
+    nodosVis = []
+    pilita.push((starNode,[]))
+    while not pilita.isEmpty():
+        nodoAct, actions = pilita.pop()
+        if not nodoAct  in nodosVis:
+            nodosVis.append(nodoAct)
+            if problem.isGoalState(nodoAct):
+                return actions
+            for nNode, action, cost in problem.expand(nodoAct):
+                nAction = actions + [action]
+                pilita.push((nNode, nAction))  
 
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
+    
     return 0
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    
     util.raiseNotDefined()
 
 
