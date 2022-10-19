@@ -17,6 +17,7 @@ In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
 
+from itertools import count
 import util
 
 class SearchProblem:
@@ -125,7 +126,6 @@ def depthFirstSearch(problem):
         if nodoAct not in nodosVis:
             nodosVis.append(nodoAct)
             if problem.isGoalState(nodoAct):
-                print(actions)
                 return actions
             for nNode, action, cost in problem.expand(nodoAct):
                 nAction = actions + [action]
@@ -136,34 +136,54 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    exploredNode = []
-    nodo = problem.getStartState()
-    if problem.isGoalState(estadoIni):
+    starNode = problem.getStartState()
+    if problem.isGoalState(starNode):
         return []
-    pilita = util.Stack()
-    pilita.push((nodo,[]))
+
+    pilita = util.Queue()
+    nodosVis = []
+    pilita.push((starNode,[]))
     while not pilita.isEmpty():
-        nodoAct,actions = pilita.pop()
-        exploredNode.append(nodoAct)
-        for nNode, action, cost in problem.expand(nodoAct):
-            if nNode not in exploredNode or pilita:
-                if problem.isGoalState(nNode):
-                    return actions
+        nodoAct, actions = pilita.pop()
+        if not nodoAct  in nodosVis:
+            nodosVis.append(nodoAct)
+            if problem.isGoalState(nodoAct):
+                return actions
+            for nNode, action, cost in problem.expand(nodoAct):
                 nAction = actions + [action]
-                pilita.push((nNode, nAction))
-    util.raiseNotDefined()
+                pilita.push((nNode, nAction))  
 
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
+    
     return 0
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    pilita = util.PriorityQueue()
+    cont = util.Counter()
+    node = (problem.getStartState(), [])
+    cont[str(node[0])] += heuristic(node[0],problem)
+    print("cont",cont)
+    pilita.push(node,cont[str(cont[0])])
+    closed = []
+
+
+    while not pilita.isEmpty():
+        nodeAux, actions = pilita.pop()
+        if problem.isGoalState(nodeAux):
+            return actions
+        if not nodeAux in closed:
+            closed.append(nodeAux)
+            for nNode, action, cost in problem.expand(nodeAux):
+                nAction = actions + [action]
+                cont[str(nNode)] = problem.getCostOfActionSequence(nAction)
+                cont[str(nNode)] += heuristic(nNode, problem)
+                pilita.push((nNode, nAction), cont[str(nNode)])
 
 
 # Abbreviations
