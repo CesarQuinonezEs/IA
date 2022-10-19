@@ -5,4 +5,4 @@
 <p>Todos los archivos estan en la carpeta llamada search</p>
 <br/>
 <h1> Captura de algoritmo A* con pacman: </h1>
-![Image text](https://github.com/https://github.com/CesarQuinonezEs/IA/tree/main/proyectos/proyecto1/assets/pacman.jpg)
+![alt text](https://github.com/https://github.com/CesarQuinonezEs/IA/tree/main/proyectos/proyecto1/assets/pacman.jpg)
