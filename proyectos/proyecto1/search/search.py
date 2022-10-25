@@ -137,18 +137,16 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     starNode = problem.getStartState()
-    if problem.isGoalState(starNode):
-        return []
-
     pilita = util.Queue()
     nodosVis = []
     pilita.push((starNode,[]))
     while not pilita.isEmpty():
         nodoAct, actions = pilita.pop()
+        if problem.isGoalState(nodoAct):
+            return actions
+
         if not nodoAct  in nodosVis:
             nodosVis.append(nodoAct)
-            if problem.isGoalState(nodoAct):
-                return actions
             for nNode, action, cost in problem.expand(nodoAct):
                 nAction = actions + [action]
                 pilita.push((nNode, nAction))  
