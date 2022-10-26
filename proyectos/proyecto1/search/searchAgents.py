@@ -317,21 +317,22 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         state = (self.startingPosition, [])
-        return state
+        return state #Regresamos el primer estado
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+        #Ya que los mapas solo tienen 4 esquinas la pregunta meta seria: ya son las 4 esquinas ?. Entonces aqui se trata de implementar eso
         nodo = state[0]
         visitadas = state[1]
 
-        if nodo in self.corners:
-            if nodo not in visitadas:
-                visitadas.append(nodo)
-            return len(visitadas) == 4
-        return False
+        if nodo in self.corners: #Si el nodo esta en la posicion de una esquina
+            if nodo not in visitadas: #Si no esta en el nodo de visitadas
+                visitadas.append(nodo) #Agregamos el nodo en ya visitados
+            return len(visitadas) == 4 #Regresamos el resultado de la pregunta "Las esquinas visitadas son 4 ?", es decir si el tamaño de la lista es 4 regresar TRUE si no Regresar False
+        return False #Regresa false si no esta el agente en una esquina
 
     def expand(self, state):
         """
@@ -349,15 +350,15 @@ class CornersProblem(search.SearchProblem):
             # Add a child state to the child list if the action is legal
             # You should call getActions, getActionCost, and getNextState.
             "*** YOUR CODE HERE ***"
-            nextState = self.getNextState(state,action)
-            cost = self.getActionCost(state, action, nextState)
-            successors = list(visitadas)
-            if nextState in self.corners:
-                if not nextState in successors:
-                    successors.append(nextState)
-            children.append(((nextState,successors), action, cost))
+            nextState = self.getNextState(state,action) #Obtenemos el siguiente estado
+            cost = self.getActionCost(state, action, nextState) #Obtenemos el costo del siguiente estado
+            successors = list(visitadas) #Creamos los sucesores
+            if nextState in self.corners: #Si el siguiente estado esta en las esquinas
+                if not nextState in successors: #Si esta en los sucesores
+                    successors.append(nextState) #Lo agregamos como sucesor
+            children.append(((nextState,successors), action, cost)) #Agregamos a la lista de hijos
         self._expanded += 1 # DO NOT CHANGE
-        return children
+        return children #Regresamos los hijos
 
     def getActions(self, state):
         possible_directions = [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]
@@ -382,7 +383,7 @@ class CornersProblem(search.SearchProblem):
         dx, dy = Actions.directionToVector(action)
         nextx, nexty = int(x + dx), int(y + dy)
         "*** YOUR CODE HERE ***"
-        return (nextx,nexty)
+        return (nextx,nexty) #Regresamos las posiciones del estado
 
     def getCostOfActionSequence(self, actions):
         """
@@ -415,24 +416,24 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    node = state[0]
-    visitedCorners = state[1]
+    node = state[0] #Nodo
+    visitedCorners = state[1] #Esquinas visitadas
     
-    unvisited = []
+    unvisited = [] #No visitadas
     
-    for corner in corners:
-        if corner not in visitedCorners:
-            unvisited.append(corner)
+    for corner in corners: #Para cada esquina de las esquinas del problema
+        if corner not in visitedCorners: #Si no esta en la esquinas visitadas
+            unvisited.append(corner) #Se pone en las no visitadas
     
-    totalDistance = 0
+    totalDistance = 0 #Distancia actual 0
     
-    while unvisited != []:
-        distance, corner = min([(mazeDistance(node, corner, problem.sGS), corner) for corner in unvisited])
-        totalDistance += distance
-        node = corner
-        unvisited.remove(corner)
+    while not unvisited.isEmpty(): #Mientras las no visitadas no este vacio
+        distance, corner = min([(mazeDistance(node, corner, problem.sGS), corner) for corner in unvisited]) #Encontrar el minimo para cada esquina en no visitadas
+        totalDistance += distance #Sumamos las distancias
+        node = corner #Creamos el nuevo nodo
+        unvisited.remove(corner) #Quitamos esa esquina de no visitadas
         
-    return totalDistance
+    return totalDistance #Regresamos la distancia total
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -548,19 +549,19 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    x,y = position
+    x,y = position 
 
-    foodD = []
-    for xAux, yAux in foodGrid.asList():
-        manhattan = abs(xAux - x) + abs(yAux - y)
-        foodD.append(manhattan)
+    foodD = [] #Lista de la distancia de cada comida
+    for xAux, yAux in foodGrid.asList(): 
+        manhattan = abs(xAux - x) + abs(yAux - y) #Realizamos la distancia manhattan
+        foodD.append(manhattan) #Lo agregamos en la lista de distancias
     
-    if len(foodD) > 0:
-        closestFood = min(foodD)
+    if len(foodD) > 0: #Si el tamaño de la lista de las distancias es mayor a 0
+        closestFood = min(foodD) #La comida mas cercana es igual a la distancia menor
     else:
-        closestFood = 0
+        closestFood = 0 
 
-    return closestFood
+    return closestFood #Regresamos la distancia mas cercana
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -590,7 +591,7 @@ class ClosestDotSearchAgent(SearchAgent):
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
         "*** YOUR CODE HERE ***"
-        return search.breadthFirstSearch(problem)
+        return search.bfs(problem) #Aqui utilizamos el BFS para encontrar las acciones que nos lleven la comida mas cercana
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -603,7 +604,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
     The class definition above, AnyFoodSearchProblem(PositionSearchProblem),
     inherits the methods of the PositionSearchProblem.
 
-    You can use this search problem to help you fill in the findPathToClosestDot
+    You can use this search problem to helclsp you fill in the findPathToClosestDot
     method.
     """
 
@@ -626,10 +627,19 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        if state in self.food:
-            return True
+        #Para este problema la pregunta meta seria si el agente esta en la comida mas cercana
+        distance, goal = min([(util.manhattanDistance(state, goal), goal) for goal in self.food.asList()]) #Buscamos la meta en este caso la comida mas cercana
+        if state == goal: #Si la posicion del agente es igua a la de la meta
+            return True #regresamos verdadero
         else:
-            return False
+            return False #Si no se regresa falso
+    #Esta parte esta basada en el codigo de del usuario de github alex-rantos.
+    #Ya que yo lo realice de manera distienta.
+    #Mi codigo
+    #return goal = (state in problem.food)
+    #Y esto me daba un error al momento que el BFS se preguntaba la meta
+
+     
 
 def mazeDistance(point1, point2, gameState):
     """

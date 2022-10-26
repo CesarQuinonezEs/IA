@@ -115,41 +115,40 @@ def depthFirstSearch(problem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-
-    #print("Start: ", problem.getStartState())
-    starNode = problem.getStartState()
-    pilita = util.Stack()
-    nodosVis = []
-    pilita.push((starNode,[]))
-    while not pilita.isEmpty():
-        nodoAct, actions = pilita.pop()
-        if nodoAct not in nodosVis:
-            nodosVis.append(nodoAct)
-            if problem.isGoalState(nodoAct):
-                return actions
-            for nNode, action, cost in problem.expand(nodoAct):
-                nAction = actions + [action]
-                pilita.push((nNode, nAction))            
+    #Hacemos el algoritmo DFS basado en el BFS que proporciona el libro
+    starNode = problem.getStartState() #Inicialiasamos la primera posicion
+    pilita = util.Stack() #Hacemos la pila
+    nodosVis = [] #La lista de nodos ya visitados
+    pilita.push((starNode,[])) #Primer push
+    while not pilita.isEmpty(): 
+        nodoAct, actions = pilita.pop() #Hacemos un pop 
+        if nodoAct not in nodosVis: #Si el nodo actual aun no fue visitado
+            nodosVis.append(nodoAct) #Añadimos el nodo a los que ya fueron visitados
+            if problem.isGoalState(nodoAct): #Si el nodo es la meta
+                return actions #Regresamos las acciones que debe cumplir el agente para llegar a el
+            for nNode, action, cost in problem.expand(nodoAct): #Si no es la meta expandimos el nodo al siguiente nodo
+                nAction = actions + [action]  #suma las acciones que se deben de realizar para llegar al nuevo nodo
+                pilita.push((nNode, nAction))  #Hacemos push a la pila con la posicion el nodo nuevo y sus acciones
 
     
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    starNode = problem.getStartState()
-    pilita = util.Queue()
-    nodosVis = []
-    pilita.push((starNode,[]))
-    while not pilita.isEmpty():
-        nodoAct, actions = pilita.pop()
-        if problem.isGoalState(nodoAct):
-            return actions
-
-        if not nodoAct  in nodosVis:
-            nodosVis.append(nodoAct)
-            for nNode, action, cost in problem.expand(nodoAct):
-                nAction = actions + [action]
-                pilita.push((nNode, nAction))  
+    #Practicamente es lo mismo que DFS pero cambiamos a una pila a una cola
+    starNode = problem.getStartState() #Primer estado del agente
+    pilita = util.Queue() #Creamos la cola
+    nodosVis = [] #creamos la llista de los nodo ya viditados
+    pilita.push((starNode,[])) #Hacemos push de los primero elementos en la cola
+    while not pilita.isEmpty(): #mientras la pila no este vacia
+        nodoAct, actions = pilita.pop() #Hacemos pop de los elementos de la cola
+        if problem.isGoalState(nodoAct): #Preguntamos si es la meta el nodo actual(posicion)
+            return actions #regresamos las acciones que nos permiten llegar ahi
+        if not nodoAct  in nodosVis: #Si no la posicion actual esta en la l
+            nodosVis.append(nodoAct) #Guardamos el nodo en los que ya estan visitados
+            for nNode, action, cost in problem.expand(nodoAct): #Expandimos el nodo
+                nAction = actions + [action] #suma las acciones que se deben de realizar para llegar al nuevo nodo
+                pilita.push((nNode, nAction))  #Hacemos push a la cola con la posicion el nodo nuevo y sus acciones
 
 def nullHeuristic(state, problem=None):
     """
@@ -162,26 +161,27 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    pilita = util.PriorityQueue()
-    cont = util.Counter()
-    node = (problem.getStartState(), [])
-    cont[str(node[0])] += heuristic(node[0],problem)
-    print("cont",cont)
-    pilita.push(node,cont[str(cont[0])])
-    closed = []
+    #Este funcion a diferencia de las anteriores utiliza la heuristica
+
+    pilita = util.PriorityQueue() #Creamos la cola
+    cont = util.Counter() #Creamos un contador
+    node = (problem.getStartState(), []) #Primer nodo
+    cont[str(node[0])] += heuristic(node[0],problem) #Sumamos en el contador
+    pilita.push(node,cont[str(cont[0])]) #Hacemos push en la cola
+    nodosVis = [] #Creamos la lista de visitados
 
 
-    while not pilita.isEmpty():
-        nodeAux, actions = pilita.pop()
-        if problem.isGoalState(nodeAux):
-            return actions
-        if not nodeAux in closed:
-            closed.append(nodeAux)
-            for nNode, action, cost in problem.expand(nodeAux):
-                nAction = actions + [action]
-                cont[str(nNode)] = problem.getCostOfActionSequence(nAction)
-                cont[str(nNode)] += heuristic(nNode, problem)
-                pilita.push((nNode, nAction), cont[str(nNode)])
+    while not pilita.isEmpty():#Mientras la cola no este vacia
+        nodeAux, actions = pilita.pop() #Hcemos el pop
+        if problem.isGoalState(nodeAux): #La posicion actual es la meta
+            return actions #Regresamos las acciones que el agente debe llevar para llegar esa posicion
+        if not nodeAux in nodosVis: #SI no esta en visitados
+            nodosVis.append(nodeAux) #Agregar el nodo en visitados
+            for nNode, action, cost in problem.expand(nodeAux): #Expandimos el nodo
+                nAction = actions + [action] #Sumamaos las acciones para el nuevo nodo
+                cont[str(nNode)] = problem.getCostOfActionSequence(nAction) #Creamos en el contador los costos para ese nodo
+                cont[str(nNode)] += heuristic(nNode, problem) #Le sumamos la euristica para el costo de el nuevo nodo
+                pilita.push((nNode, nAction), cont[str(nNode)]) #Hacemos push en la cola
 
 
 # Abbreviations
